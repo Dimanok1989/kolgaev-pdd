@@ -1,0 +1,35 @@
+name: PDD-Master
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on:
+      - self-hosted
+      - kolgaev-pdd
+    defaults:
+      run:
+        working-directory: /var/www/kolgaev-pdd
+    steps:
+      - name: Deployment
+        run: |
+          git checkout master
+          git pull origin master
+      - name: NPM Install
+        run: npm ci
+      - name: NPM build
+        run: npm run build
+      - name: Move files
+        run: |
+          mkdir -p .releases/${{ github.sha }}
+          cp -rf .next/* .releases/${{ github.sha }}
+          rm -fr .releases/.next.old
+          mkdir -p .releases/.next
+          mv .releases/.next .releases/.next.old
+          mv .releases/${{ github.sha }} .releases/.next
+      - name: PM2 restart
+        run: pm2 restart kolgaev-pdd
+      - name: Release log
+        run: touch .releases/releases.log | echo "$(date) - ${{ github.sha }}" >> .releases/releases.log
