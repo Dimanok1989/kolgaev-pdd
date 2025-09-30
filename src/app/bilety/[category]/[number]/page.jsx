@@ -1,39 +1,13 @@
-'use client';
-
 import Breadcrumbs from "@/components/Dashboard/Breadcrumbs";
-import Loader from "@/components/Layouts/Loader";
-import TicketQuestions from "@/components/TicketQuestions";
-import useAxios from "@/hooks/useAxios";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import TicketMain from "@/components/tickets/TicketMain";
 
-const Ticket = () => {
+export const metadata = {};
 
-    const params = useParams();
-    const { axios } = useAxios();
+export default async function Ticket({ params }) {
 
-    const [title, setTitle] = useState(null);
-    const [questions, setQuestions] = useState([]);
-    const [result, setResult] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const { category, number } = params;
-        axios.get(`pdd/${category}/ticket/${number}`)
-            .then(({ data }) => {
-                setError(null);
-                setTitle(data?.title);
-                setQuestions(data?.questions || []);
-                setResult(data?.result || {});
-            })
-            .catch(() => {
-                setError("Ошибка загрузки билета");
-            })
-            .then(() => {
-                setIsLoading(false);
-            });
-    }, []);
+    const { number } = await params;
+    metadata.title = `Билет ${String(number).replace('bilet-', '')} - ПДД Онлайн`;
+    metadata.description = `Решите экзаменационный билет ${String(number).replace('bilet-', '')} как в ГИБДД`;
 
     return <div>
 
@@ -44,16 +18,7 @@ const Ticket = () => {
             ]}
         />
 
-        {isLoading && <Loader />}
-        {error && <div className="text-center my-1 text-red-500 text-lg">{error}</div>}
-
-        <TicketQuestions
-            title={title}
-            questions={questions}
-            result={result}
-        />
+        <TicketMain />
 
     </div>
 }
-
-export default Ticket;

@@ -2,6 +2,7 @@
 
 import Loader from "@/components/Layouts/Loader";
 import useAxios from "@/hooks/useAxios";
+import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -30,6 +31,10 @@ const Tickets = () => {
     }, []);
 
     return <div>
+
+        <Head>
+        <title>My page title</title>
+      </Head>
 
         <h1 className="mb-3 text-3xl font-extrabold">Билеты ПДД</h1>
 

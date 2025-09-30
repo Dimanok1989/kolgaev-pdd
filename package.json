@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "start-prod": "next start",
     "start": "next start .releases"
   },
   "dependencies": {
